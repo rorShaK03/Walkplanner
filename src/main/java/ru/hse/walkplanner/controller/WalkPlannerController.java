@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.hse.walkplanner.dto.ApiErrorResponse;
 import ru.hse.walkplanner.dto.GetRouteRequest;
 import ru.hse.walkplanner.dto.PointDTO;
+import ru.hse.walkplanner.dto.RouteInfoBrieflyDTO;
 import ru.hse.walkplanner.dto.RouteInfoDTO;
+import ru.hse.walkplanner.dto.RoutesBrieflyResponse;
+import ru.hse.walkplanner.dto.RoutesResponse;
 
 import java.math.BigDecimal;
 
@@ -40,8 +43,8 @@ public class WalkPlannerController {
     }
 
     @GetMapping("/route")
-    public ResponseEntity<?> getRoute(@RequestHeader(value = "apply-filters", defaultValue = "false") String applyFilters,
-                                      @RequestBody GetRouteRequest request) {
+    public ResponseEntity<?> getRoutes(@RequestHeader(value = "apply-filters", defaultValue = "false") String applyFilters,
+                                       @RequestBody GetRouteRequest request) {
         RouteInfoDTO routeInfoDTO = RouteInfoDTO.builder()
                 .name("ahaha")
                 .userId("12345")
@@ -49,12 +52,29 @@ public class WalkPlannerController {
                 .path(new PointDTO[]{
                         new PointDTO(new BigDecimal("1.1"), new BigDecimal("1.2"), null),
                         new PointDTO(new BigDecimal("1.3"), new BigDecimal("1.112"), null),
-                        new PointDTO(new BigDecimal("1.6"), new BigDecimal("1.22"), new String[] {"what", "r", "u", "doing"}),
+                        new PointDTO(new BigDecimal("1.6"), new BigDecimal("1.22"), new String[]{"what", "r", "u", "doing"}),
                         new PointDTO(new BigDecimal("1.89"), new BigDecimal("1.23244"), null)
                 })
                 .keyPoints(null)
                 .build();
 
-        return ResponseEntity.ok().body(routeInfoDTO);
+        RoutesResponse routesResponse = new RoutesResponse(new RouteInfoDTO[]{routeInfoDTO});
+        return ResponseEntity.ok().body(routesResponse);
+    }
+
+    @GetMapping("/route-briefly")
+    public ResponseEntity<?> getRoutesBriefly(@RequestHeader(value = "apply-filters", defaultValue = "false") String applyFilters,
+                                              @RequestBody GetRouteRequest request) {
+
+        RouteInfoBrieflyDTO routeInfoDTO = RouteInfoBrieflyDTO.builder()
+                .name("ahaha")
+                .userId("12345")
+                .description("oh nonono")
+                .keyPoints(new String[]{"VDNH", "Red Square"})
+                .build();
+
+        RoutesBrieflyResponse routesBrieflyResponse = new RoutesBrieflyResponse(new RouteInfoBrieflyDTO[]{routeInfoDTO});
+
+        return ResponseEntity.ok().body(routesBrieflyResponse);
     }
 }
