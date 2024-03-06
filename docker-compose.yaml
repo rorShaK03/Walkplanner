@@ -1,0 +1,12 @@
+services:
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      POSTGRES_DB: walkplanner
+      POSTGRES_PASSWORD: qwerty
+      POSTGRES_USER: admin
+    ports:
+      - '5432:5432'
+    volumes:
+      - type: tmpfs
+        target: /var/lib/postgresql/data
