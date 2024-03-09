@@ -15,12 +15,34 @@ import ru.hse.walkplanner.dto.RouteInfoBrieflyDTO;
 import ru.hse.walkplanner.dto.RouteInfoDTO;
 import ru.hse.walkplanner.dto.RoutesBrieflyResponse;
 import ru.hse.walkplanner.dto.RoutesResponse;
+import ru.hse.walkplanner.entity.KeyPoint;
+import ru.hse.walkplanner.entity.Point;
+import ru.hse.walkplanner.entity.Track;
+import ru.hse.walkplanner.entity.User;
+import ru.hse.walkplanner.repository.KeyPointRepository;
+import ru.hse.walkplanner.repository.PointRepository;
+import ru.hse.walkplanner.repository.TrackRepository;
+import ru.hse.walkplanner.repository.UserRepository;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 
 @RestController
 public class WalkPlannerController {
+
+
+    public WalkPlannerController(UserRepository userRepository, TrackRepository trackRepository, PointRepository pointRepository, KeyPointRepository keyPointRepository) {
+        // Просто пример использования репозитория
+        Point point = new Point(null, 0.3131231, 0.47287482347, 0, null);
+        pointRepository.save(point);
+        KeyPoint keyPoint = new KeyPoint(null, "keyPointName", "keyPointDescription", 0.3131231, 0.47287482347, null);
+        keyPointRepository.save(keyPoint);
+        User user = new User(null, "kirill", "myemail@ya.ru", "some_hash", List.of(), null, null);
+        userRepository.save(user);
+        Track track = new Track(null, "name", "desc", 0, 0,0, 0, 0, List.of(point), List.of(keyPoint), user, null, null);
+        trackRepository.save(track);
+    }
 
     @GetMapping("/hello")
     public String ahaha() {
