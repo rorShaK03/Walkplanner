@@ -1,4 +1,4 @@
-package ru.hse.walkplanner.entity.utils;
+package ru.hse.walkplanner.service.utils;
 
 import org.springframework.stereotype.Component;
 import ru.hse.walkplanner.dto.KeyPointsDTO;
@@ -8,8 +8,8 @@ import ru.hse.walkplanner.dto.RouteInfoDTO;
 import ru.hse.walkplanner.entity.KeyPoint;
 import ru.hse.walkplanner.entity.Point;
 import ru.hse.walkplanner.entity.Track;
+import ru.hse.walkplanner.entity.User;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -21,14 +21,14 @@ public class MapEntityToDTOHelper {
         return KeyPointsDTO.builder()
                 .name(keyPoint.getName())
                 .description(keyPoint.getDescription())
-                .latitude(BigDecimal.valueOf(keyPoint.getLatitude()))
-                .longitude(BigDecimal.valueOf(keyPoint.getLongitude()))
+                .latitude(keyPoint.getLatitude())
+                .longitude(keyPoint.getLongitude())
                 .build();
     }
 
     public KeyPoint getKeyPointEntity(KeyPointsDTO keyPointsDTO) {
         return new KeyPoint(null, keyPointsDTO.name(), keyPointsDTO.description(),
-                keyPointsDTO.latitude().doubleValue(), keyPointsDTO.longitude().doubleValue(), null
+                keyPointsDTO.latitude(), keyPointsDTO.longitude()
         );
     }
 
@@ -38,14 +38,14 @@ public class MapEntityToDTOHelper {
 
     public PointDTO getPointDTO(Point point) {
         return PointDTO.builder()
-                .latitude(BigDecimal.valueOf(point.getLatitude()))
-                .longitude(BigDecimal.valueOf(point.getLongitude()))
+                .latitude(point.getLatitude())
+                .longitude(point.getLongitude())
                 .tags(null)
                 .build();
     }
 
     public Point getPointEntity(PointDTO pointDTO, int index) {
-        return new Point(null, pointDTO.longitude().doubleValue(), pointDTO.latitude().doubleValue(), index, null);
+        return new Point(null, pointDTO.longitude(), pointDTO.latitude(), index);
     }
 
     public List<Point> getPointEntityList(PointDTO[] pointDTOs) {
@@ -62,7 +62,7 @@ public class MapEntityToDTOHelper {
                 .keyPoints(track.getKeyPoints().stream().map(this::getKeyPointsDTO).toArray(KeyPointsDTO[]::new))
                 .name(track.getName())
                 .description(track.getDescription())
-                .userId(track.getCreator().getId().toString())
+                .authorId(track.getCreator().getId())
                 .build();
     }
 
@@ -72,17 +72,17 @@ public class MapEntityToDTOHelper {
                 .keyPoints(track.getKeyPoints().stream().map(this::getKeyPointsDTO).toArray(KeyPointsDTO[]::new))
                 .name(track.getName())
                 .description(track.getDescription())
-                .userId(track.getCreator().getId().toString())
+                .authorId(track.getCreator().getId())
                 .build();
     }
 
-    public Track getTrackEntity(RouteInfoDTO routeInfoDTO) {
+    public Track getTrackEntity(RouteInfoDTO routeInfoDTO, User user) {
         return new Track(null, routeInfoDTO.name(), routeInfoDTO.description(),
                 0, 0, 0,
                 -1, -1,
                 this.getPointEntityList(routeInfoDTO.path()),
                 this.getKeyPointEntityList(routeInfoDTO.keyPoints()),
-                null, null, null
+                user
         );
     }
 }

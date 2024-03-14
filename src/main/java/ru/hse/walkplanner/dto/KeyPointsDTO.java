@@ -5,5 +5,5 @@ import lombok.Builder;
 import java.math.BigDecimal;
 
 @Builder
-public record KeyPointsDTO(String name, String description, BigDecimal latitude, BigDecimal longitude) {
+public record KeyPointsDTO(String name, String description, double latitude, double longitude) {
 }
