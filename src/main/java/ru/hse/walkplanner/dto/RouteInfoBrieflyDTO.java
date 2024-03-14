@@ -7,5 +7,5 @@ import lombok.Builder;
 
 @Builder
 public record RouteInfoBrieflyDTO(@NotNull @JsonProperty("user_id") String userId, String name,
-                                  String description, @JsonProperty("key_points") String[] keyPoints) {
+                                  String description, @JsonProperty("key_points") KeyPointsDTO[] keyPoints) {
 }

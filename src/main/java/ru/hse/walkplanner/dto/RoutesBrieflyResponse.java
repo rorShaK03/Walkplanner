@@ -1,4 +1,7 @@
 package ru.hse.walkplanner.dto;
 
-public record RoutesBrieflyResponse(RouteInfoBrieflyDTO[] routes) {
+import lombok.Builder;
+
+@Builder
+public record RoutesBrieflyResponse(RouteInfoBrieflyDTO[] routes, Integer totalPages, Integer currentPage) {
 }
