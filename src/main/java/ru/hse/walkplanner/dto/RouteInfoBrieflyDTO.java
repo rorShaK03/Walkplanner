@@ -8,6 +8,7 @@ import java.util.UUID;
 
 @Builder
 public record RouteInfoBrieflyDTO(
+        @JsonProperty("id") UUID id,
         @JsonProperty("author_id") UUID authorId,
         String name,
         String description,

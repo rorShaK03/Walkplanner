@@ -1,5 +1,6 @@
 package ru.hse.walkplanner.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -42,7 +43,7 @@ public class User {
     private String passwordHash;
 
     @Setter
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Track> createdTracks;
 
     @CreationTimestamp

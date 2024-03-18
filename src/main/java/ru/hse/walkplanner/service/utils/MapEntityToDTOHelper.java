@@ -63,6 +63,7 @@ public class MapEntityToDTOHelper {
                 .name(track.getName())
                 .description(track.getDescription())
                 .authorId(track.getCreator().getId())
+                .id(track.getId())
                 .build();
     }
 
@@ -82,7 +83,8 @@ public class MapEntityToDTOHelper {
                 -1, -1,
                 this.getPointEntityList(routeInfoDTO.path()),
                 this.getKeyPointEntityList(routeInfoDTO.keyPoints()),
-                user
+                user,
+                null
         );
     }
 }
