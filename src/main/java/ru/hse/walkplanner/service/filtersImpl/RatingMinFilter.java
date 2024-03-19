@@ -15,7 +15,7 @@ public class RatingMinFilter extends AbstractFilterParser implements FilterParse
 
     @Override
     public String logic(String remain, String[] info) {
-        String sql = "rating_users > 0 AND rating / rating_users > " + remain;
+        String sql = "rated_users > 0 AND rating / rated_users > " + remain;
         sql = "(" + sql + ")";
         return sql;
     }

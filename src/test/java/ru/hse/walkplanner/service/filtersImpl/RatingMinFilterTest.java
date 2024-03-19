@@ -23,7 +23,7 @@ class RatingMinFilterTest {
         Optional<String> sqlInjection = ratingMinFilter.getSqlInjection(filter, null);
 
         Assertions.assertTrue(sqlInjection.isPresent(), "filter not passed");
-        Assertions.assertTrue(sqlInjection.get().equalsIgnoreCase("(rating_users > 0 AND rating / rating_users > 4.5)"), "sql string not matched");
+        Assertions.assertTrue(sqlInjection.get().equalsIgnoreCase("(rated_users > 0 AND rating / rated_users > 4.5)"), "sql string not matched");
     }
 
     @ParameterizedTest

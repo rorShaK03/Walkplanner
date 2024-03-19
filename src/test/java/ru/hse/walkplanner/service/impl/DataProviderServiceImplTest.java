@@ -107,12 +107,11 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
         Track track = trackRepository.findById(route.entityId()).get();
 
 
-        GetRoutesBrieflyRequest.Requirements requirements = new GetRoutesBrieflyRequest.Requirements(
-                null,  null
-        );
+        GetRoutesBrieflyRequest.Requirements requirements = new GetRoutesBrieflyRequest.Requirements(null);
         int page = 0, size = 5;
+        String sort = "created_at,desc";
 
-        RoutesBrieflyResponse resp = dataProviderServiceImpl.getRoutesBriefly(new GetRoutesBrieflyRequest(0d, 0d, requirements), page, size);
+        RoutesBrieflyResponse resp = dataProviderServiceImpl.getRoutesBriefly(new GetRoutesBrieflyRequest(0d, 0d, requirements), page, size, sort);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(1, (int) resp.totalPages()),
@@ -152,16 +151,15 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
         }
 
 
-        GetRoutesBrieflyRequest.Requirements requirements = new GetRoutesBrieflyRequest.Requirements(
-                null,  null
-        );
+        GetRoutesBrieflyRequest.Requirements requirements = new GetRoutesBrieflyRequest.Requirements(null);
         int size = 5;
+        String sort = "created_at,desc";
 
-        RoutesBrieflyResponse respPage0 = dataProviderServiceImpl.getRoutesBriefly(new GetRoutesBrieflyRequest(0d, 0d, requirements), 0, size);
-        RoutesBrieflyResponse respPage1 = dataProviderServiceImpl.getRoutesBriefly(new GetRoutesBrieflyRequest(1d, 1d, requirements), 1, size);
-        RoutesBrieflyResponse respPage2 = dataProviderServiceImpl.getRoutesBriefly(new GetRoutesBrieflyRequest(2d, 2d, requirements), 2, size);
-        RoutesBrieflyResponse respPage3 = dataProviderServiceImpl.getRoutesBriefly(new GetRoutesBrieflyRequest(3d, 3d, requirements), 3, size);
-        RoutesBrieflyResponse respPage4 = dataProviderServiceImpl.getRoutesBriefly(new GetRoutesBrieflyRequest(4d, 4d, requirements), 4, size);
+        RoutesBrieflyResponse respPage0 = dataProviderServiceImpl.getRoutesBriefly(new GetRoutesBrieflyRequest(0d, 0d, requirements), 0, size, sort);
+        RoutesBrieflyResponse respPage1 = dataProviderServiceImpl.getRoutesBriefly(new GetRoutesBrieflyRequest(1d, 1d, requirements), 1, size, sort);
+        RoutesBrieflyResponse respPage2 = dataProviderServiceImpl.getRoutesBriefly(new GetRoutesBrieflyRequest(2d, 2d, requirements), 2, size, sort);
+        RoutesBrieflyResponse respPage3 = dataProviderServiceImpl.getRoutesBriefly(new GetRoutesBrieflyRequest(3d, 3d, requirements), 3, size, sort);
+        RoutesBrieflyResponse respPage4 = dataProviderServiceImpl.getRoutesBriefly(new GetRoutesBrieflyRequest(4d, 4d, requirements), 4, size, sort);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(size, respPage0.routes().length),

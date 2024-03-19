@@ -14,7 +14,7 @@ public interface DataProviderService {
 
     PushingRouteResponse pushRoute(RouteInfoDTO info);
 
-    RoutesBrieflyResponse getRoutesBriefly(GetRoutesBrieflyRequest routesRequest, int page, int size);
+    RoutesBrieflyResponse getRoutesBriefly(GetRoutesBrieflyRequest routesRequest, int page, int size, String sort);
 
     RoutesResponse getRouteDetailed(GetOneRouteRequest routeRequest);
 }

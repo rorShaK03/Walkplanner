@@ -4,7 +4,6 @@ import jakarta.persistence.EntityManager;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +17,6 @@ import ru.hse.walkplanner.dto.KeyPointsDTO;
 import ru.hse.walkplanner.dto.PointDTO;
 import ru.hse.walkplanner.dto.RegistrationResponse;
 import ru.hse.walkplanner.dto.RouteInfoDTO;
-import ru.hse.walkplanner.dto.RoutesBrieflyResponse;
 import ru.hse.walkplanner.entity.KeyPoint;
 import ru.hse.walkplanner.entity.Track;
 import ru.hse.walkplanner.service.ApplyAnyFilterService;
@@ -80,7 +78,7 @@ class TrackRepositoryWithDynamicQueryImplTest extends IntegrationEnvironment {
 
 
         GetRoutesBrieflyRequest.Requirements req = new GetRoutesBrieflyRequest.Requirements(
-                new String[]{"name: ahaha", "two", "three"}, null
+                new String[]{"name: ahaha", "two", "three"}
         );
         String actual = invokeGetSqlQueryMethod(req, null, null);
 
@@ -214,7 +212,7 @@ class TrackRepositoryWithDynamicQueryImplTest extends IntegrationEnvironment {
                     .name("name")
                     .description("desc")
                     .authorId(userResponse.yourId())
-                    .path(new PointDTO[] {
+                    .path(new PointDTO[]{
                             new PointDTO(-1d, -1d, null)
                     })
                     .keyPoints(new KeyPointsDTO[]{
@@ -233,7 +231,7 @@ class TrackRepositoryWithDynamicQueryImplTest extends IntegrationEnvironment {
                     .name("name")
                     .description("desc")
                     .authorId(userResponse.yourId())
-                    .path(new PointDTO[] {
+                    .path(new PointDTO[]{
                             new PointDTO(-1d, -1d, null)
                     })
                     .keyPoints(new KeyPointsDTO[]{
@@ -249,7 +247,7 @@ class TrackRepositoryWithDynamicQueryImplTest extends IntegrationEnvironment {
 
 
         GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(0d, 0d,
-                new GetRoutesBrieflyRequest.Requirements(new String[]{"key_points: name1<SEP>name3"}, null));
+                new GetRoutesBrieflyRequest.Requirements(new String[]{"key_points: name1<SEP>name3"}));
         Page<Track> allTrackWithRequirements = trackRepositoryWithDynamicQueryImpl.findAllTrackWithRequirements(request, null);
 
         Assertions.assertAll(

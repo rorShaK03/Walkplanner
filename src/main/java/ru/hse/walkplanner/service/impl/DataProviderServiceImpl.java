@@ -23,9 +23,6 @@ import ru.hse.walkplanner.repository.UserRepository;
 import ru.hse.walkplanner.service.DataProviderService;
 import ru.hse.walkplanner.service.utils.MapEntityToDTOHelper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -62,8 +59,8 @@ public class DataProviderServiceImpl implements DataProviderService {
 
     @Transactional
     @Override
-    public RoutesBrieflyResponse getRoutesBriefly(GetRoutesBrieflyRequest routesRequest, int page, int size) {
-        List<Sort.Order> orders = parseSort(routesRequest.requirements().sort());
+    public RoutesBrieflyResponse getRoutesBriefly(GetRoutesBrieflyRequest routesRequest, int page, int size, String sort) {
+        Sort.Order orders = parseSort(sort);
         Pageable pagingSort = PageRequest.of(page, size, Sort.by(orders));
 
         Page<Track> tracksPage = trackRepositoryWithDynamicQuery.findAllTrackWithRequirements(routesRequest, pagingSort);
@@ -79,22 +76,28 @@ public class DataProviderServiceImpl implements DataProviderService {
                 .build();
     }
 
-    private List<Sort.Order> parseSort(String[] sort) {
-        try {
-            List<Sort.Order> orders = new ArrayList<>();
-            for (String s : sort) {
-                String[] split = s.split(",");
-                Sort.Direction direction = Sort.Direction.ASC;
-                if (split[1].equalsIgnoreCase("desc")) {
-                    direction = Sort.Direction.DESC;
-                }
+    private Sort.Order parseSort(String sort) {
+        String[] split = sort.split(",");
 
-                orders.add(new Sort.Order(direction, split[0]));
-            }
-            return orders;
-        } catch (Exception ignored) {
-            return new ArrayList<>();
+        Sort.Direction direction;
+        String dirFromString;
+        try {
+            dirFromString = split[1];
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            throw new RuntimeException("You did not passed the query correctly. Ex: #created_at,asc#");
         }
+
+
+        if (dirFromString.equalsIgnoreCase("asc")) {
+            direction = Sort.Direction.ASC;
+        }
+        else if (dirFromString.equalsIgnoreCase("desc")) {
+            direction = Sort.Direction.DESC;
+        } else {
+            throw new RuntimeException("cat not parse direction");
+        }
+
+        return new Sort.Order(direction, split[0]);
     }
 
     @Transactional

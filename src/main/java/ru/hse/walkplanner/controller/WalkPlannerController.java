@@ -64,10 +64,10 @@ public class WalkPlannerController {
     public ResponseEntity<RoutesBrieflyResponse> getRoutesBriefly(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
-//            @RequestParam(defaultValue = "[authorId,desc]") String[] sort,
+            @RequestParam(defaultValue = "[created_at,desc]") String sort,
             @RequestBody GetRoutesBrieflyRequest request
     ) {
-        RoutesBrieflyResponse response = dataProviderService.getRoutesBriefly(request, page, size);
+        RoutesBrieflyResponse response = dataProviderService.getRoutesBriefly(request, page, size, sort);
         return ResponseEntity.ok().body(response);
     }
 }
