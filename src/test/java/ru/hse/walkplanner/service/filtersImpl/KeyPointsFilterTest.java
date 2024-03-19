@@ -18,7 +18,7 @@ class KeyPointsFilterTest {
 
     @Test
     void testCorrectLogic() {
-        String filter = "key_points: ahaha<SEP>nonononoonono<SEP>dodo";
+        String filter = "key_points=ahaha<SEP>nonononoonono<SEP>dodo";
         String excepted = "(id IN (SELECT tk.track_id\n" +
                 "FROM tracks_key_points tk\n" +
                 "INNER JOIN key_points k\n" +
@@ -39,5 +39,11 @@ class KeyPointsFilterTest {
         Optional<String> sqlInjection = keyPointsFilter.getSqlInjection(filter, null);
 
         Assertions.assertTrue(sqlInjection.isEmpty());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"key_points=", "key_points"})
+    void notThatValue(String filter) {
+        Assertions.assertThrows(RuntimeException.class, () -> keyPointsFilter.getSqlInjection(filter, null));
     }
 }

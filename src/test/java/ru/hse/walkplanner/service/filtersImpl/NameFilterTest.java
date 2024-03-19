@@ -19,7 +19,7 @@ class NameFilterTest {
 
     @Test
     void testCorrectLogic() {
-        String filter = "name: ahaha";
+        String filter = "name=ahaha";
 
         Optional<String> sqlInjection = nameFilter.getSqlInjection(filter, null);
 
@@ -33,5 +33,11 @@ class NameFilterTest {
         Optional<String> sqlInjection = nameFilter.getSqlInjection(filter, null);
 
         Assertions.assertTrue(sqlInjection.isEmpty());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"name=", "name"})
+    void notThatValue(String filter) {
+        Assertions.assertThrows(RuntimeException.class, () -> nameFilter.getSqlInjection(filter, null));
     }
 }

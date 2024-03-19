@@ -8,19 +8,19 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Optional;
 
-class RatingFilterTest {
-    private RatingFilter ratingFilter;
+class RatingMaxFilterTest {
+    private RatingMinFilter ratingMinFilter;
 
     @BeforeEach
     void init() {
-        ratingFilter = new RatingFilter();
+        ratingMinFilter = new RatingMinFilter();
     }
 
     @Test
     void testCorrectLogic() {
-        String filter = "rating: 4.5";
+        String filter = "ratingMin=4.5";
 
-        Optional<String> sqlInjection = ratingFilter.getSqlInjection(filter, null);
+        Optional<String> sqlInjection = ratingMinFilter.getSqlInjection(filter, null);
 
         Assertions.assertTrue(sqlInjection.isPresent(), "filter not passed");
         Assertions.assertTrue(sqlInjection.get().equalsIgnoreCase("(rating_users > 0 AND rating / rating_users > 4.5)"), "sql string not matched");
@@ -29,8 +29,14 @@ class RatingFilterTest {
     @ParameterizedTest
     @ValueSource(strings = {"ratatui: ahaha", "hm"})
     void notThatFiler(String filter) {
-        Optional<String> sqlInjection = ratingFilter.getSqlInjection(filter, null);
+        Optional<String> sqlInjection = ratingMinFilter.getSqlInjection(filter, null);
 
         Assertions.assertTrue(sqlInjection.isEmpty());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"ratingMin=", "ratingMin"})
+    void notThatValue(String filter) {
+        Assertions.assertThrows(RuntimeException.class, () -> ratingMinFilter.getSqlInjection(filter, null));
     }
 }

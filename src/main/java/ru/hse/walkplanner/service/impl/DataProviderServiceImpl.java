@@ -85,7 +85,7 @@ public class DataProviderServiceImpl implements DataProviderService {
             for (String s : sort) {
                 String[] split = s.split(",");
                 Sort.Direction direction = Sort.Direction.ASC;
-                if (split[1].equals("desc")) {
+                if (split[1].equalsIgnoreCase("desc")) {
                     direction = Sort.Direction.DESC;
                 }
 

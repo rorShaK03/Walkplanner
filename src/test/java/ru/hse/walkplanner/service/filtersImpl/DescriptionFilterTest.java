@@ -19,7 +19,7 @@ class DescriptionFilterTest {
 
     @Test
     void testCorrectLogic() {
-        String filter = "description: ahaha<SEP>nonononoonono<SEP>dodo";
+        String filter = "description=ahaha<SEP>nonononoonono<SEP>dodo";
 
         Optional<String> sqlInjection = descriptionFilter.getSqlInjection(filter, null);
 
@@ -30,10 +30,16 @@ class DescriptionFilterTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"disco: ahaha", "hmm"})
+    @ValueSource(strings = {"disco=ahaha", "hmm"})
     void notThatFiler(String filter) {
         Optional<String> sqlInjection = descriptionFilter.getSqlInjection(filter, null);
 
         Assertions.assertTrue(sqlInjection.isEmpty());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"description=", "description"})
+    void notThatValue(String filter) {
+        Assertions.assertThrows(RuntimeException.class, () -> descriptionFilter.getSqlInjection(filter, null));
     }
 }
