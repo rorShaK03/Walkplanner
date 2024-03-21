@@ -54,6 +54,3 @@ create table if not exists "tracks_points" (
 
 
 
-
-
-

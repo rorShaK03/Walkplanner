@@ -18,7 +18,7 @@ class DistanceMinFilterTest {
 
     @Test
     void testCorrectLogic() {
-        String filter = "distanceMin=5";
+        String filter = "distance_min=5";
 
         Optional<String> sqlInjection = distanceMinFilter.getSqlInjection(filter, null);
 
@@ -35,7 +35,7 @@ class DistanceMinFilterTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"distanceMin=", "distanceMin"})
+    @ValueSource(strings = {"distance_min=", "distance_min"})
     void notThatValue(String filter) {
         Assertions.assertThrows(RuntimeException.class, () -> distanceMinFilter.getSqlInjection(filter, null));
     }

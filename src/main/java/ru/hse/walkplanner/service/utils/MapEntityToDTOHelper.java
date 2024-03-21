@@ -27,12 +27,14 @@ public class MapEntityToDTOHelper {
     }
 
     public KeyPoint getKeyPointEntity(KeyPointsDTO keyPointsDTO) {
+        if (keyPointsDTO == null) {return null;}
         return new KeyPoint(null, keyPointsDTO.name(), keyPointsDTO.description(),
                 keyPointsDTO.latitude(), keyPointsDTO.longitude()
         );
     }
 
     public List<KeyPoint> getKeyPointEntityList(KeyPointsDTO[] keyPointsDTOS) {
+        if (keyPointsDTOS == null) {return null;}
         return Arrays.stream(keyPointsDTOS).map(this::getKeyPointEntity).toList();
     }
 
@@ -49,6 +51,10 @@ public class MapEntityToDTOHelper {
     }
 
     public List<Point> getPointEntityList(PointDTO[] pointDTOs) {
+        if (pointDTOs == null || pointDTOs.length == 0) {
+            throw new RuntimeException("You passed route without any points");
+        }
+
         List<Point> points = new ArrayList<>();
         for (int i = 0; i < pointDTOs.length; i++) {
             Point tmp = this.getPointEntity(pointDTOs[i], i);

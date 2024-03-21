@@ -18,7 +18,7 @@ class DistanceMaxFilterTest {
 
     @Test
     void testCorrectLogic() {
-        String filter = "distanceMax=5";
+        String filter = "distance_max=5";
 
         Optional<String> sqlInjection = distanceMaxFilter.getSqlInjection(filter, null);
 
@@ -35,7 +35,7 @@ class DistanceMaxFilterTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"distanceMax=", "distanceMax"})
+    @ValueSource(strings = {"distance_max=", "distance_max"})
     void notThatValue(String filter) {
         Assertions.assertThrows(RuntimeException.class, () -> distanceMaxFilter.getSqlInjection(filter, null));
     }

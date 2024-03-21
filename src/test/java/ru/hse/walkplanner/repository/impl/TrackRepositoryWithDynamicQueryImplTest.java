@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import ru.hse.walkplanner.dto.RegistrationResponse;
 import ru.hse.walkplanner.dto.RouteInfoDTO;
 import ru.hse.walkplanner.entity.KeyPoint;
 import ru.hse.walkplanner.entity.Track;
+import ru.hse.walkplanner.repository.impl.util.InfoFromRequirements;
 import ru.hse.walkplanner.service.ApplyAnyFilterService;
 import ru.hse.walkplanner.service.ApplyAnySortingService;
 import ru.hse.walkplanner.service.DataProviderService;
@@ -54,8 +56,9 @@ class TrackRepositoryWithDynamicQueryImplTest extends IntegrationEnvironment {
     }
 
     @SneakyThrows
-    private String invokeGetSqlQueryMethod(GetRoutesBrieflyRequest.Requirements requirements, Sort sort, String[] info) {
-        Method method = TrackRepositoryWithDynamicQueryImpl.class.getDeclaredMethod("getSqlQuery", GetRoutesBrieflyRequest.Requirements.class, Sort.class, String[].class);
+    private String invokeGetSqlQueryMethod(GetRoutesBrieflyRequest.Requirements requirements, Sort sort, InfoFromRequirements info) {
+        Method method = TrackRepositoryWithDynamicQueryImpl.class
+                .getDeclaredMethod("getSqlQuery", GetRoutesBrieflyRequest.Requirements.class, Sort.class, InfoFromRequirements.class);
         method.setAccessible(true);
         return (String) method.invoke(trackRepositoryWithDynamicQueryImpl, requirements, sort, info);
     }
@@ -78,7 +81,7 @@ class TrackRepositoryWithDynamicQueryImplTest extends IntegrationEnvironment {
 
 
         GetRoutesBrieflyRequest.Requirements req = new GetRoutesBrieflyRequest.Requirements(
-                new String[]{"name: ahaha", "two", "three"}
+                new String[]{"name=ahaha", "two", "three"}
         );
         String actual = invokeGetSqlQueryMethod(req, null, null);
 
@@ -247,13 +250,28 @@ class TrackRepositoryWithDynamicQueryImplTest extends IntegrationEnvironment {
 
 
         GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(0d, 0d,
-                new GetRoutesBrieflyRequest.Requirements(new String[]{"key_points: name1<SEP>name3"}));
+                new GetRoutesBrieflyRequest.Requirements(new String[]{"key_points:name1<SEP>name3"}));
         Page<Track> allTrackWithRequirements = trackRepositoryWithDynamicQueryImpl.findAllTrackWithRequirements(request, null);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(2, allTrackWithRequirements.getContent().size()),
                 () -> Assertions.assertTrue(allTrackWithRequirements.getContent().get(0).getKeyPoints().stream()
                         .map(KeyPoint::getName).toList().containsAll(List.of("name1", "name3")))
+        );
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void findAllTrackWithRequirements_checkDistanceToMeFilterQuery() {
+        pushRandomTrack(100);
+
+        GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(-13d, 2d,
+                new GetRoutesBrieflyRequest.Requirements(new String[]{"distance_to_me_min:0"}));
+        Page<Track> allTrackWithRequirements = trackRepositoryWithDynamicQueryImpl.findAllTrackWithRequirements(request, null);
+
+        Assertions.assertAll(
+                () -> Assertions.assertFalse(allTrackWithRequirements.getContent().isEmpty())
         );
     }
 }

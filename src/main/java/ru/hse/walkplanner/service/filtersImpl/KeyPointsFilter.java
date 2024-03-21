@@ -1,6 +1,7 @@
 package ru.hse.walkplanner.service.filtersImpl;
 
 import org.springframework.stereotype.Component;
+import ru.hse.walkplanner.repository.impl.util.InfoFromRequirements;
 import ru.hse.walkplanner.service.FilterParserService;
 
 import java.util.Arrays;
@@ -17,7 +18,7 @@ public class KeyPointsFilter extends AbstractFilterParser implements FilterParse
     }
 
     @Override
-    public String logic(String remain, String[] info) {
+    public String logic(String remain, InfoFromRequirements unused) {
         String[] split = remain.split(separator);
         split = Arrays.stream(split).map(it -> "'" + it + "'").toArray(String[]::new);
 

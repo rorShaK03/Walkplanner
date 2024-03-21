@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.hse.walkplanner.dto.GetRoutesBrieflyRequest;
 import ru.hse.walkplanner.entity.Track;
 import ru.hse.walkplanner.repository.TrackRepositoryWithDynamicQuery;
+import ru.hse.walkplanner.repository.impl.util.InfoFromRequirements;
 import ru.hse.walkplanner.service.ApplyAnyFilterService;
 import ru.hse.walkplanner.service.ApplyAnySortingService;
 
@@ -38,7 +39,7 @@ public class TrackRepositoryWithDynamicQueryImpl implements TrackRepositoryWithD
     @Transactional
     public Page<Track> findAllTrackWithRequirements(GetRoutesBrieflyRequest request, Pageable pageable) {
         pageable = complementPageable(pageable);
-        String[] locationInfo = getLocationInfo(request);
+        InfoFromRequirements locationInfo = getLocationInfo(request);
         GetRoutesBrieflyRequest.Requirements requirements = Objects.isNull(request) ? null : request.requirements();
 
         String sql = getSqlQuery(requirements, pageable.getSort(), locationInfo);
@@ -60,7 +61,7 @@ public class TrackRepositoryWithDynamicQueryImpl implements TrackRepositoryWithD
         return new PageImpl<>(list, pageable, val);
     }
 
-    private String getSqlQuery(GetRoutesBrieflyRequest.Requirements requirements, Sort sort, String[] info) {
+    private String getSqlQuery(GetRoutesBrieflyRequest.Requirements requirements, Sort sort, InfoFromRequirements info) {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("SELECT * FROM tracks \n");
 
@@ -72,7 +73,7 @@ public class TrackRepositoryWithDynamicQueryImpl implements TrackRepositoryWithD
         return queryBuilder.toString();
     }
 
-    private String getTotalSize(GetRoutesBrieflyRequest.Requirements requirements, String[] info) {
+    private String getTotalSize(GetRoutesBrieflyRequest.Requirements requirements, InfoFromRequirements info) {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("SELECT count(*) FROM tracks \n");
 
@@ -83,7 +84,7 @@ public class TrackRepositoryWithDynamicQueryImpl implements TrackRepositoryWithD
     }
 
 
-    private String appendFilters(GetRoutesBrieflyRequest.Requirements requirements, String[] info) {
+    private String appendFilters(GetRoutesBrieflyRequest.Requirements requirements, InfoFromRequirements info) {
         StringBuilder queryBuilder = new StringBuilder();
         if (Objects.nonNull(requirements) && Objects.nonNull(requirements.filter())) {
             for (String filter : requirements.filter()) {
@@ -98,7 +99,7 @@ public class TrackRepositoryWithDynamicQueryImpl implements TrackRepositoryWithD
         return queryBuilder.toString();
     }
 
-    private String appendSorting(Sort sort, String[] info) {
+    private String appendSorting(Sort sort, InfoFromRequirements info) {
         StringBuilder queryBuilder = new StringBuilder();
         if (Objects.nonNull(sort)) {
             List<String> orders = new ArrayList<>();
@@ -126,12 +127,9 @@ public class TrackRepositoryWithDynamicQueryImpl implements TrackRepositoryWithD
         return given;
     }
 
-    private String[] getLocationInfo(GetRoutesBrieflyRequest request) {
+    private InfoFromRequirements getLocationInfo(GetRoutesBrieflyRequest request) {
         if (Objects.nonNull(request)) {
-            return new String[]{
-                    String.valueOf(request.latitude()),
-                    String.valueOf(request.longitude())
-            };
+            return new InfoFromRequirements(request.latitude(), request.longitude());
         }
         return null;
     }

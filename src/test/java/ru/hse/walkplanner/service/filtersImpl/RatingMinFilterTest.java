@@ -18,7 +18,7 @@ class RatingMinFilterTest {
 
     @Test
     void testCorrectLogic() {
-        String filter = "ratingMin=4.5";
+        String filter = "rating_min=4.5";
 
         Optional<String> sqlInjection = ratingMinFilter.getSqlInjection(filter, null);
 
@@ -35,7 +35,7 @@ class RatingMinFilterTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"ratingMin=", "ratingMin"})
+    @ValueSource(strings = {"rating_min=", "rating_min"})
     void notThatValue(String filter) {
         Assertions.assertThrows(RuntimeException.class, () -> ratingMinFilter.getSqlInjection(filter, null));
     }

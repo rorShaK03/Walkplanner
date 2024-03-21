@@ -1,12 +1,13 @@
 package ru.hse.walkplanner.service.filtersImpl;
 
 import org.springframework.stereotype.Component;
+import ru.hse.walkplanner.repository.impl.util.InfoFromRequirements;
 import ru.hse.walkplanner.service.FilterParserService;
 
 @Component
 public class RatingMinFilter extends AbstractFilterParser implements FilterParserService {
 
-    private static final String filterName = "ratingMin";
+    private static final String filterName = "rating_min";
 
     @Override
     public String getFilterName() {
@@ -14,7 +15,7 @@ public class RatingMinFilter extends AbstractFilterParser implements FilterParse
     }
 
     @Override
-    public String logic(String remain, String[] info) {
+    public String logic(String remain, InfoFromRequirements unused) {
         String sql = "rated_users > 0 AND rating / rated_users > " + remain;
         sql = "(" + sql + ")";
         return sql;

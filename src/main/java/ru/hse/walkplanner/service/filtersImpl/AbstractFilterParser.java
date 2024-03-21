@@ -1,5 +1,6 @@
 package ru.hse.walkplanner.service.filtersImpl;
 
+import ru.hse.walkplanner.repository.impl.util.InfoFromRequirements;
 import ru.hse.walkplanner.service.FilterParserService;
 
 import java.util.Optional;
@@ -7,7 +8,7 @@ import java.util.Optional;
 public abstract class AbstractFilterParser implements FilterParserService {
 
     @Override
-    public Optional<String> getSqlInjection(String filter, String[] info) {
+    public Optional<String> getSqlInjection(String filter, InfoFromRequirements info) {
         try {
             if (!filter.startsWith(getFilterName())) {
                 return Optional.empty();
@@ -26,5 +27,5 @@ public abstract class AbstractFilterParser implements FilterParserService {
 
     public abstract String getFilterName();
 
-    public abstract String logic(String remain, String[] info);
+    public abstract String logic(String remain, InfoFromRequirements info);
 }
