@@ -9,5 +9,4 @@ public class WalkplannerApplication {
     public static void main(String[] args) {
         SpringApplication.run(WalkplannerApplication.class, args);
     }
-
 }

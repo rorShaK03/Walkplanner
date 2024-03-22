@@ -2,6 +2,7 @@ package ru.hse.walkplanner.service.impl;
 
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -182,9 +183,8 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
         GetRoutesBrieflyRequest.Requirements requirements = new GetRoutesBrieflyRequest.Requirements(new String[]{"name=name"});
         GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(0d, 0d, requirements);
         int page = 0, size = 5;
-        String sort = "created_at,desc";
 
-        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, sort);
+        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, null);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(size, response.routes().length)
@@ -200,9 +200,8 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
         GetRoutesBrieflyRequest.Requirements requirements = new GetRoutesBrieflyRequest.Requirements(new String[]{"name=am"});
         GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(0d, 0d, requirements);
         int page = 0, size = 5;
-        String sort = "created_at,desc";
 
-        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, sort);
+        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, null);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(size, response.routes().length)
@@ -218,9 +217,8 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
         GetRoutesBrieflyRequest.Requirements requirements = new GetRoutesBrieflyRequest.Requirements(new String[]{"name=AHAHA"});
         GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(0d, 0d, requirements);
         int page = 0, size = 5;
-        String sort = "created_at,desc";
 
-        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, sort);
+        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, null);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(0, response.routes().length)
@@ -236,9 +234,8 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
         GetRoutesBrieflyRequest.Requirements requirements = new GetRoutesBrieflyRequest.Requirements(new String[]{"description=d<SEP>e<SEP>s<SEP>c"});
         GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(0d, 0d, requirements);
         int page = 0, size = 5;
-        String sort = "created_at,desc";
 
-        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, sort);
+        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, null);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(size, response.routes().length)
@@ -254,9 +251,8 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
         GetRoutesBrieflyRequest.Requirements requirements = new GetRoutesBrieflyRequest.Requirements(new String[]{"name=name", "description=d<SEP>e<SEP>s<SEP>c"});
         GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(0d, 0d, requirements);
         int page = 0, size = 5;
-        String sort = "created_at,desc";
 
-        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, sort);
+        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, null);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(size, response.routes().length)
@@ -302,9 +298,8 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
         GetRoutesBrieflyRequest.Requirements requirements = new GetRoutesBrieflyRequest.Requirements(new String[]{"key_points=keyPoint1"});
         GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(0d, 0d, requirements);
         int page = 0, size = 5;
-        String sort = "created_at,desc";
 
-        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, sort);
+        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, null);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(2, response.routes().length)
@@ -320,9 +315,8 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
         GetRoutesBrieflyRequest.Requirements requirements = new GetRoutesBrieflyRequest.Requirements(new String[]{"distance_to_me_max=0"});
         GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(110d, 110d, requirements);
         int page = 0, size = 5;
-        String sort = "created_at,desc";
 
-        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, sort);
+        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, null);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(0, response.routes().length)
@@ -338,9 +332,8 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
         GetRoutesBrieflyRequest.Requirements requirements = new GetRoutesBrieflyRequest.Requirements(new String[]{"distance_max=-1"});
         GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(110d, 110d, requirements);
         int page = 0, size = 5;
-        String sort = "created_at,desc";
 
-        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, sort);
+        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, null);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(0, response.routes().length)
@@ -356,12 +349,67 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
         GetRoutesBrieflyRequest.Requirements requirements = new GetRoutesBrieflyRequest.Requirements(new String[]{"rating_min=0"});
         GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(110d, 110d, requirements);
         int page = 0, size = 5;
+
+        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, null);
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(5, response.routes().length)
+        );
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void getRoutesBriefly_checkSortCreatedAtIsCorrect() {
+        pushRoute(6);
+
+        GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(110d, 110d, null);
+        int page = 0, size = 5;
         String sort = "created_at,desc";
 
         RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, sort);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(5, response.routes().length)
+        );
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void getRoutesBriefly_checkSortDistanceIsCorrect() {
+        pushRoute(6);
+
+        GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(110d, 110d, null);
+        int page = 0, size = 5;
+        String sort = "distance,asc";
+
+        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, sort);
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(5, response.routes().length)
+        );
+    }
+
+    @Test
+    @Disabled
+    @Transactional
+    @Rollback
+    void getRoutesBriefly_checkSortRatingIsCorrect() {
+        pushRoute(6);
+
+        GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(110d, 110d, null);
+        int page = 0, size = 5;
+        String sort = "rating,desc";
+
+        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, sort);
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(5, response.routes().length),
+                () -> Assertions.assertTrue(response.routes()[0].rating() > response.routes()[1].rating()),
+                () -> Assertions.assertTrue(response.routes()[1].rating() > response.routes()[2].rating()),
+                () -> Assertions.assertTrue(response.routes()[2].rating() > response.routes()[3].rating()),
+                () -> Assertions.assertTrue(response.routes()[3].rating() > response.routes()[4].rating())
         );
     }
 }

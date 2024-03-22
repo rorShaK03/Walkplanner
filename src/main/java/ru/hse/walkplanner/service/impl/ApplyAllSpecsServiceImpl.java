@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.hse.walkplanner.dto.GetRoutesBrieflyRequest;
-import ru.hse.walkplanner.entity.Track;
 import ru.hse.walkplanner.dto.util.InfoFromRequirements;
-import ru.hse.walkplanner.service.ApplyAllFilterSpecService;
+import ru.hse.walkplanner.entity.Track;
+import ru.hse.walkplanner.service.ApplyAllSpecsService;
 import ru.hse.walkplanner.service.ApplyAnyFilterSpecService;
 
 import java.util.ArrayList;
@@ -16,14 +16,17 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class ApplyAllFilterSpecServiceImpl implements ApplyAllFilterSpecService {
+public class ApplyAllSpecsServiceImpl implements ApplyAllSpecsService {
 
     private ApplyAnyFilterSpecService applyAnyFilter;
+    private ApplyAnySortSpecServiceImpl applyAnySort;
 
     @Override
     public Specification<Track> getQuerySpecification(GetRoutesBrieflyRequest request, String sort) {
-        Specification<Track> trackSpecification = appendFilters(request);
-        return trackSpecification;
+        return Specification.allOf(
+                appendFilters(request),
+                appendSorts(request, sort)
+        );
     }
 
     private Specification<Track> appendFilters(GetRoutesBrieflyRequest request) {
@@ -41,6 +44,17 @@ public class ApplyAllFilterSpecServiceImpl implements ApplyAllFilterSpecService 
         }
 
         return Specification.allOf(specs);
+    }
+
+    private Specification<Track> appendSorts(GetRoutesBrieflyRequest request, String sort) {
+        InfoFromRequirements info = getLocationInfo(request);
+
+        if (Objects.isNull(sort) || sort.isEmpty()) {
+            sort = "created_at,desc";
+        }
+
+        Optional<Specification<Track>> trackSpecification = applyAnySort.applyAnySort(sort, info);
+        return trackSpecification.orElseGet(() -> Specification.where(null));
     }
 
     private InfoFromRequirements getLocationInfo(GetRoutesBrieflyRequest request) {

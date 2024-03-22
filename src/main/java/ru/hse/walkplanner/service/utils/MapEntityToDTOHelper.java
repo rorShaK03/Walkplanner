@@ -83,6 +83,7 @@ public class MapEntityToDTOHelper {
                 .description(track.getDescription())
                 .authorUsername(track.getCreator().getUsername())
                 .distanceMeters(track.getDistanceMeters())
+                .walkMinutes(track.getWalkMinutes())
                 .walkedUsers(track.getWalkedUsers())
                 .rating(getRating(track))
                 .createdAt(track.getCreatedAt())
@@ -98,9 +99,11 @@ public class MapEntityToDTOHelper {
                 .description(track.getDescription())
                 .authorUsername(track.getCreator().getUsername())
                 .distanceMeters(track.getDistanceMeters())
+                .walkMinutes(track.getWalkMinutes())
                 .walkedUsers(track.getWalkedUsers())
                 .rating(getRating(track))
                 .createdAt(track.getCreatedAt())
+                .id(track.getId())
                 .build();
     }
 

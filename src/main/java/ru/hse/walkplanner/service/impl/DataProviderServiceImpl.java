@@ -20,7 +20,7 @@ import ru.hse.walkplanner.entity.Track;
 import ru.hse.walkplanner.entity.User;
 import ru.hse.walkplanner.repository.TrackRepository;
 import ru.hse.walkplanner.repository.UserRepository;
-import ru.hse.walkplanner.service.ApplyAllFilterSpecService;
+import ru.hse.walkplanner.service.ApplyAllSpecsService;
 import ru.hse.walkplanner.service.DataProviderService;
 import ru.hse.walkplanner.service.utils.MapEntityToDTOHelper;
 
@@ -33,7 +33,7 @@ public class DataProviderServiceImpl implements DataProviderService {
     private TrackRepository trackRepository;
     private UserRepository userRepository;
 
-    private ApplyAllFilterSpecService applyAllFilterSpecService;
+    private ApplyAllSpecsService applyAllSpecsService;
     private MapEntityToDTOHelper mapEntityToDTOHelper;
 
     @Transactional
@@ -61,7 +61,7 @@ public class DataProviderServiceImpl implements DataProviderService {
     @Transactional
     @Override
     public RoutesBrieflyResponse getRoutesBriefly(GetRoutesBrieflyRequest routesRequest, int page, int size, String sort) {
-        Specification<Track> spec = applyAllFilterSpecService.getQuerySpecification(routesRequest, sort);
+        Specification<Track> spec = applyAllSpecsService.getQuerySpecification(routesRequest, sort);
         Pageable pageable = PageRequest.of(page, size);
 
         Page<Track> tracksPage = trackRepository.findAll(spec, pageable);
