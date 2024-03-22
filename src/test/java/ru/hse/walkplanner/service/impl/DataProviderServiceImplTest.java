@@ -2,7 +2,6 @@ package ru.hse.walkplanner.service.impl;
 
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,7 +12,7 @@ import ru.hse.walkplanner.dto.KeyPointsDTO;
 import ru.hse.walkplanner.dto.PointDTO;
 import ru.hse.walkplanner.dto.PushingRouteResponse;
 import ru.hse.walkplanner.dto.RegistrationResponse;
-import ru.hse.walkplanner.dto.RouteInfoDTO;
+import ru.hse.walkplanner.dto.RoutePushingInfoDTO;
 import ru.hse.walkplanner.dto.RoutesBrieflyResponse;
 import ru.hse.walkplanner.entity.Track;
 import ru.hse.walkplanner.repository.KeyPointRepository;
@@ -58,7 +57,7 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
     @Rollback
     void pushRoute_testCorrectLogic() {
         RegistrationResponse user = dataProviderServiceImpl.addRandomUser();
-        RouteInfoDTO routeInfoDTO = RouteInfoDTO.builder()
+        RoutePushingInfoDTO routeInfoDTO = RoutePushingInfoDTO.builder()
                 .name("name")
                 .description("description")
                 .authorId(user.yourId())
@@ -89,7 +88,7 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
     @Rollback
     void getRoutesBriefly_NoRequirements() {
         RegistrationResponse user = dataProviderServiceImpl.addRandomUser();
-        RouteInfoDTO routeInfoDTO = RouteInfoDTO.builder()
+        RoutePushingInfoDTO routeInfoDTO = RoutePushingInfoDTO.builder()
                 .name("name")
                 .description("description")
                 .authorId(user.yourId())
@@ -133,7 +132,7 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
         RegistrationResponse user = dataProviderServiceImpl.addRandomUser();
 
         for (int i = 0; i < 17; i++) {
-            RouteInfoDTO routeInfoDTO = RouteInfoDTO.builder()
+            RoutePushingInfoDTO routeInfoDTO = RoutePushingInfoDTO.builder()
                     .name("name")
                     .description("description")
                     .authorId(user.yourId())

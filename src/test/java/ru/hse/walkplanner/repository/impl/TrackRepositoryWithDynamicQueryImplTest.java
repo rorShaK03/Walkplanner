@@ -18,6 +18,7 @@ import ru.hse.walkplanner.dto.KeyPointsDTO;
 import ru.hse.walkplanner.dto.PointDTO;
 import ru.hse.walkplanner.dto.RegistrationResponse;
 import ru.hse.walkplanner.dto.RouteInfoDTO;
+import ru.hse.walkplanner.dto.RoutePushingInfoDTO;
 import ru.hse.walkplanner.entity.KeyPoint;
 import ru.hse.walkplanner.entity.Track;
 import ru.hse.walkplanner.repository.impl.util.InfoFromRequirements;
@@ -92,7 +93,7 @@ class TrackRepositoryWithDynamicQueryImplTest extends IntegrationEnvironment {
         for (int j = 0; j < times; j++) {
             RegistrationResponse userResponse = dataProviderService.addRandomUser();
 
-            RouteInfoDTO routeInfoDTO = RouteInfoDTO.builder()
+            RoutePushingInfoDTO routeInfoDTO = RoutePushingInfoDTO.builder()
                     .name("")
                     .description("")
                     .authorId(userResponse.yourId())
@@ -165,7 +166,7 @@ class TrackRepositoryWithDynamicQueryImplTest extends IntegrationEnvironment {
     @Rollback
     void findAllTrackWithRequirements_checkContent() {
         RegistrationResponse userResponse = dataProviderService.addRandomUser();
-        RouteInfoDTO routeInfoDTO = RouteInfoDTO.builder()
+        RoutePushingInfoDTO routeInfoDTO = RoutePushingInfoDTO.builder()
                 .name("name")
                 .description("desc")
                 .authorId(userResponse.yourId())
@@ -211,7 +212,7 @@ class TrackRepositoryWithDynamicQueryImplTest extends IntegrationEnvironment {
         RegistrationResponse userResponse = dataProviderService.addRandomUser();
 
         for (int i = 0; i < 2; i++) {
-            RouteInfoDTO routeInfoDTO = RouteInfoDTO.builder()
+            RoutePushingInfoDTO routeInfoDTO = RoutePushingInfoDTO.builder()
                     .name("name")
                     .description("desc")
                     .authorId(userResponse.yourId())
@@ -230,7 +231,7 @@ class TrackRepositoryWithDynamicQueryImplTest extends IntegrationEnvironment {
         }
 
         for (int i = 0; i < 5; i++) {
-            RouteInfoDTO routeInfoDTO = RouteInfoDTO.builder()
+            RoutePushingInfoDTO routeInfoDTO = RoutePushingInfoDTO.builder()
                     .name("name")
                     .description("desc")
                     .authorId(userResponse.yourId())

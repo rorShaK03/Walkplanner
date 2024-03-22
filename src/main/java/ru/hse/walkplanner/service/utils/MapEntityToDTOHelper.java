@@ -5,6 +5,7 @@ import ru.hse.walkplanner.dto.KeyPointsDTO;
 import ru.hse.walkplanner.dto.PointDTO;
 import ru.hse.walkplanner.dto.RouteInfoBrieflyDTO;
 import ru.hse.walkplanner.dto.RouteInfoDTO;
+import ru.hse.walkplanner.dto.RoutePushingInfoDTO;
 import ru.hse.walkplanner.entity.KeyPoint;
 import ru.hse.walkplanner.entity.Point;
 import ru.hse.walkplanner.entity.Track;
@@ -27,14 +28,18 @@ public class MapEntityToDTOHelper {
     }
 
     public KeyPoint getKeyPointEntity(KeyPointsDTO keyPointsDTO) {
-        if (keyPointsDTO == null) {return null;}
+        if (keyPointsDTO == null) {
+            return null;
+        }
         return new KeyPoint(null, keyPointsDTO.name(), keyPointsDTO.description(),
                 keyPointsDTO.latitude(), keyPointsDTO.longitude()
         );
     }
 
     public List<KeyPoint> getKeyPointEntityList(KeyPointsDTO[] keyPointsDTOS) {
-        if (keyPointsDTOS == null) {return null;}
+        if (keyPointsDTOS == null) {
+            return null;
+        }
         return Arrays.stream(keyPointsDTOS).map(this::getKeyPointEntity).toList();
     }
 
@@ -63,12 +68,23 @@ public class MapEntityToDTOHelper {
         return points;
     }
 
+    private Double getRating(Track track) {
+        if (track.getRatedUsers() == 0) {
+            return Double.NaN;
+        }
+        return ((double) track.getRating() / track.getRatedUsers());
+    }
+
     public RouteInfoBrieflyDTO getRouteInfoBrieflyDTO(Track track) {
         return RouteInfoBrieflyDTO.builder()
                 .keyPoints(track.getKeyPoints().stream().map(this::getKeyPointsDTO).toArray(KeyPointsDTO[]::new))
                 .name(track.getName())
                 .description(track.getDescription())
-                .authorId(track.getCreator().getId())
+                .authorUsername(track.getCreator().getUsername())
+                .distanceMeters(track.getDistanceMeters())
+                .walkedUsers(track.getWalkedUsers())
+                .rating(getRating(track))
+                .createdAt(track.getCreatedAt())
                 .id(track.getId())
                 .build();
     }
@@ -79,16 +95,20 @@ public class MapEntityToDTOHelper {
                 .keyPoints(track.getKeyPoints().stream().map(this::getKeyPointsDTO).toArray(KeyPointsDTO[]::new))
                 .name(track.getName())
                 .description(track.getDescription())
-                .authorId(track.getCreator().getId())
+                .authorUsername(track.getCreator().getUsername())
+                .distanceMeters(track.getDistanceMeters())
+                .walkedUsers(track.getWalkedUsers())
+                .rating(getRating(track))
+                .createdAt(track.getCreatedAt())
                 .build();
     }
 
-    public Track getTrackEntity(RouteInfoDTO routeInfoDTO, User user) {
-        return new Track(null, routeInfoDTO.name(), routeInfoDTO.description(),
+    public Track getTrackEntity(RoutePushingInfoDTO routePushingInfoDTO, User user) {
+        return new Track(null, routePushingInfoDTO.name(), routePushingInfoDTO.description(),
                 0, 0, 0,
                 -1, -1,
-                this.getPointEntityList(routeInfoDTO.path()),
-                this.getKeyPointEntityList(routeInfoDTO.keyPoints()),
+                this.getPointEntityList(routePushingInfoDTO.path()),
+                this.getKeyPointEntityList(routePushingInfoDTO.keyPoints()),
                 user,
                 null
         );

@@ -13,6 +13,7 @@ import ru.hse.walkplanner.dto.PushingRouteResponse;
 import ru.hse.walkplanner.dto.RegistrationResponse;
 import ru.hse.walkplanner.dto.RouteInfoBrieflyDTO;
 import ru.hse.walkplanner.dto.RouteInfoDTO;
+import ru.hse.walkplanner.dto.RoutePushingInfoDTO;
 import ru.hse.walkplanner.dto.RoutesBrieflyResponse;
 import ru.hse.walkplanner.dto.RoutesResponse;
 import ru.hse.walkplanner.entity.Track;
@@ -44,7 +45,7 @@ public class DataProviderServiceImpl implements DataProviderService {
 
     @Transactional
     @Override
-    public PushingRouteResponse pushRoute(RouteInfoDTO info) {
+    public PushingRouteResponse pushRoute(RoutePushingInfoDTO info) {
         Optional<User> userOpt = userRepository.findById(info.authorId());
         if (userOpt.isEmpty()) {
             throw new RuntimeException("no user found with this id");

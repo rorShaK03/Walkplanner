@@ -14,7 +14,7 @@ import ru.hse.walkplanner.dto.GetOneRouteRequest;
 import ru.hse.walkplanner.dto.GetRoutesBrieflyRequest;
 import ru.hse.walkplanner.dto.PushingRouteResponse;
 import ru.hse.walkplanner.dto.RegistrationResponse;
-import ru.hse.walkplanner.dto.RouteInfoDTO;
+import ru.hse.walkplanner.dto.RoutePushingInfoDTO;
 import ru.hse.walkplanner.dto.RoutesBrieflyResponse;
 import ru.hse.walkplanner.dto.RoutesResponse;
 import ru.hse.walkplanner.service.DataProviderService;
@@ -49,7 +49,7 @@ public class WalkPlannerController {
     }
 
     @PostMapping("/update/push-route")
-    public ResponseEntity<PushingRouteResponse> pushRoute(@RequestBody RouteInfoDTO request) {
+    public ResponseEntity<PushingRouteResponse> pushRoute(@RequestBody RoutePushingInfoDTO request) {
         PushingRouteResponse response = dataProviderService.pushRoute(request);
         return ResponseEntity.ok().body(response);
     }
