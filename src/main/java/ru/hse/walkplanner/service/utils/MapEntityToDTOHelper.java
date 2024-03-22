@@ -14,6 +14,7 @@ import ru.hse.walkplanner.entity.User;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 @Component
 public class MapEntityToDTOHelper {
@@ -105,7 +106,7 @@ public class MapEntityToDTOHelper {
 
     public Track getTrackEntity(RoutePushingInfoDTO routePushingInfoDTO, User user) {
         return new Track(null, routePushingInfoDTO.name(), routePushingInfoDTO.description(),
-                0, 0, 0,
+                new Random().nextInt(50, 125), 25, 50,
                 -1, -1,
                 this.getPointEntityList(routePushingInfoDTO.path()),
                 this.getKeyPointEntityList(routePushingInfoDTO.keyPoints()),

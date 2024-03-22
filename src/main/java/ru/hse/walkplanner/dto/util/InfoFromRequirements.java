@@ -1,4 +1,4 @@
-package ru.hse.walkplanner.repository.impl.util;
+package ru.hse.walkplanner.dto.util;
 
 public record InfoFromRequirements(double latitude, double longitude) {
 }

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hse.walkplanner.dto.GetOneRouteRequest;
@@ -19,8 +19,8 @@ import ru.hse.walkplanner.dto.RoutesResponse;
 import ru.hse.walkplanner.entity.Track;
 import ru.hse.walkplanner.entity.User;
 import ru.hse.walkplanner.repository.TrackRepository;
-import ru.hse.walkplanner.repository.TrackRepositoryWithDynamicQuery;
 import ru.hse.walkplanner.repository.UserRepository;
+import ru.hse.walkplanner.service.ApplyAllFilterSpecService;
 import ru.hse.walkplanner.service.DataProviderService;
 import ru.hse.walkplanner.service.utils.MapEntityToDTOHelper;
 
@@ -31,9 +31,9 @@ import java.util.Optional;
 public class DataProviderServiceImpl implements DataProviderService {
 
     private TrackRepository trackRepository;
-    private TrackRepositoryWithDynamicQuery trackRepositoryWithDynamicQuery;
     private UserRepository userRepository;
 
+    private ApplyAllFilterSpecService applyAllFilterSpecService;
     private MapEntityToDTOHelper mapEntityToDTOHelper;
 
     @Transactional
@@ -61,10 +61,10 @@ public class DataProviderServiceImpl implements DataProviderService {
     @Transactional
     @Override
     public RoutesBrieflyResponse getRoutesBriefly(GetRoutesBrieflyRequest routesRequest, int page, int size, String sort) {
-        Sort.Order orders = parseSort(sort);
-        Pageable pagingSort = PageRequest.of(page, size, Sort.by(orders));
+        Specification<Track> spec = applyAllFilterSpecService.getQuerySpecification(routesRequest, sort);
+        Pageable pageable = PageRequest.of(page, size);
 
-        Page<Track> tracksPage = trackRepositoryWithDynamicQuery.findAllTrackWithRequirements(routesRequest, pagingSort);
+        Page<Track> tracksPage = trackRepository.findAll(spec, pageable);
         RouteInfoBrieflyDTO[] content = tracksPage.getContent()
                 .stream()
                 .map(mapEntityToDTOHelper::getRouteInfoBrieflyDTO)
@@ -75,30 +75,6 @@ public class DataProviderServiceImpl implements DataProviderService {
                 .currentPage(tracksPage.getNumber())
                 .totalPages(tracksPage.getTotalPages())
                 .build();
-    }
-
-    private Sort.Order parseSort(String sort) {
-        String[] split = sort.split(",");
-
-        Sort.Direction direction;
-        String dirFromString;
-        try {
-            dirFromString = split[1];
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            throw new RuntimeException("You did not passed the query correctly. Ex: #created_at,asc#");
-        }
-
-
-        if (dirFromString.equalsIgnoreCase("asc")) {
-            direction = Sort.Direction.ASC;
-        }
-        else if (dirFromString.equalsIgnoreCase("desc")) {
-            direction = Sort.Direction.DESC;
-        } else {
-            throw new RuntimeException("cat not parse direction");
-        }
-
-        return new Sort.Order(direction, split[0]);
     }
 
     @Transactional
