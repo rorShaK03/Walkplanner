@@ -3,6 +3,7 @@ package ru.hse.walkplanner.service.impl;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,7 +24,9 @@ import ru.hse.walkplanner.repository.UserRepository;
 import testContainer.IntegrationEnvironment;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Random;
 
 @SpringBootTest
 class DataProviderServiceImplTest extends IntegrationEnvironment {
@@ -357,11 +360,69 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
         );
     }
 
-    @Test
+    @RepeatedTest(10)
+    @Transactional
+    @Rollback
+    void getRoutesBriefly_checkFilterRatingIsCorrect2() {
+        RegistrationResponse user = dataProviderServiceImpl.addRandomUser();
+        for (int i = 0; i < 10; i++) {
+            RoutePushingInfoDTO routeInfoDTO = RoutePushingInfoDTO.builder()
+                    .name("name")
+                    .description("description")
+                    .authorId(user.yourId())
+                    .path(new PointDTO[]{
+                            new PointDTO(1d, 1d, null),
+                    })
+                    .keyPoints(new KeyPointsDTO[]{})
+                    .build();
+            PushingRouteResponse route = dataProviderServiceImpl.pushRoute(routeInfoDTO);
+            Track track = trackRepository.findById(route.entityId()).get();
+
+            track.setRating(new Random().nextInt(5, 10));
+            track.setRatedUsers(i % 5);
+        }
+
+        Double val = 2.3;
+        GetRoutesBrieflyRequest.Requirements requirements = new GetRoutesBrieflyRequest.Requirements(new String[]{"rating_min=" + val});
+        GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(110d, 110d, requirements);
+        int page = 0, size = 5;
+
+        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, null);
+
+        Assertions.assertAll(
+                () -> Assertions.assertTrue(Arrays.stream(response.routes()).allMatch(it -> it.rating() >= val))
+        );
+    }
+
+    @RepeatedTest(20)
     @Transactional
     @Rollback
     void getRoutesBriefly_checkSortCreatedAtIsCorrect() {
-        pushRoute(6);
+        RegistrationResponse user = dataProviderServiceImpl.addRandomUser();
+        for (int i = 0; i < 10; i++) {
+            RoutePushingInfoDTO routeInfoDTO = RoutePushingInfoDTO.builder()
+                    .name("name")
+                    .description("description")
+                    .authorId(user.yourId())
+                    .path(new PointDTO[]{
+                            new PointDTO(1d, 1d, null),
+                            new PointDTO(2d, 2d, null)
+                    })
+                    .keyPoints(new KeyPointsDTO[]{
+                            new KeyPointsDTO("name", "desc", 1d, 1d),
+                            new KeyPointsDTO("name", "desc", 1d, 1d),
+                            new KeyPointsDTO("name", "desc", 1d, 1d)
+                    })
+                    .build();
+            PushingRouteResponse route = dataProviderServiceImpl.pushRoute(routeInfoDTO);
+            Track track = trackRepository.findById(route.entityId()).get();
+
+            if (i % 2 == 0) {
+                track.setCreatedAt(Date.from(Instant.now().plusSeconds(i * 100)));
+            } else {
+                track.setCreatedAt(Date.from(Instant.now().minusSeconds(i * 100)));
+            }
+        }
 
         GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(110d, 110d, null);
         int page = 0, size = 5;
@@ -370,15 +431,44 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
         RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, sort);
 
         Assertions.assertAll(
-                () -> Assertions.assertEquals(5, response.routes().length)
+                () -> Assertions.assertEquals(5, response.routes().length),
+                () -> Assertions.assertTrue(response.routes()[0].createdAt().after(response.routes()[1].createdAt())),
+                () -> Assertions.assertTrue(response.routes()[1].createdAt().after(response.routes()[2].createdAt())),
+                () -> Assertions.assertTrue(response.routes()[2].createdAt().after(response.routes()[3].createdAt())),
+                () -> Assertions.assertTrue(response.routes()[3].createdAt().after(response.routes()[4].createdAt()))
         );
     }
 
-    @Test
+    @RepeatedTest(10)
     @Transactional
     @Rollback
     void getRoutesBriefly_checkSortDistanceIsCorrect() {
-        pushRoute(6);
+        RegistrationResponse user = dataProviderServiceImpl.addRandomUser();
+        for (int i = 0; i < 10; i++) {
+            RoutePushingInfoDTO routeInfoDTO = RoutePushingInfoDTO.builder()
+                    .name("name")
+                    .description("description")
+                    .authorId(user.yourId())
+                    .path(new PointDTO[]{
+                            new PointDTO(1d, 1d, null),
+                            new PointDTO(2d, 2d, null)
+                    })
+                    .keyPoints(new KeyPointsDTO[]{
+                            new KeyPointsDTO("name", "desc", 1d, 1d),
+                            new KeyPointsDTO("name", "desc", 1d, 1d),
+                            new KeyPointsDTO("name", "desc", 1d, 1d)
+                    })
+                    .build();
+            PushingRouteResponse route = dataProviderServiceImpl.pushRoute(routeInfoDTO);
+            Track track = trackRepository.findById(route.entityId()).get();
+
+            if (i % 2 == 0) {
+                track.setDistanceMeters(i * 111);
+            } else {
+                track.setDistanceMeters(i * 5);
+            }
+        }
+
 
         GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(110d, 110d, null);
         int page = 0, size = 5;
@@ -387,16 +477,37 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
         RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, sort);
 
         Assertions.assertAll(
-                () -> Assertions.assertEquals(5, response.routes().length)
+                () -> Assertions.assertEquals(5, response.routes().length),
+                () -> Assertions.assertTrue(response.routes()[0].distanceMeters() <= (response.routes()[1].distanceMeters())),
+                () -> Assertions.assertTrue(response.routes()[1].distanceMeters() <= (response.routes()[2].distanceMeters())),
+                () -> Assertions.assertTrue(response.routes()[2].distanceMeters() <= (response.routes()[3].distanceMeters())),
+                () -> Assertions.assertTrue(response.routes()[3].distanceMeters() <= (response.routes()[4].distanceMeters()))
         );
     }
 
-    @Test
+    @RepeatedTest(10)
     @Disabled
     @Transactional
     @Rollback
     void getRoutesBriefly_checkSortRatingIsCorrect() {
-        pushRoute(6);
+        RegistrationResponse user = dataProviderServiceImpl.addRandomUser();
+        for (int i = 0; i < 10; i++) {
+            RoutePushingInfoDTO routeInfoDTO = RoutePushingInfoDTO.builder()
+                    .name("name")
+                    .description("description")
+                    .authorId(user.yourId())
+                    .path(new PointDTO[]{
+                            new PointDTO(1d, 1d, null),
+                    })
+                    .keyPoints(new KeyPointsDTO[]{})
+                    .build();
+            PushingRouteResponse route = dataProviderServiceImpl.pushRoute(routeInfoDTO);
+            Track track = trackRepository.findById(route.entityId()).get();
+
+            track.setRating(new Random().nextInt(0, 5));
+            track.setRatedUsers(i % 3);
+        }
+
 
         GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(110d, 110d, null);
         int page = 0, size = 5;
@@ -404,12 +515,30 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
 
         RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, sort);
 
+        System.out.println(Arrays.toString(response.routes()));
         Assertions.assertAll(
                 () -> Assertions.assertEquals(5, response.routes().length),
-                () -> Assertions.assertTrue(response.routes()[0].rating() > response.routes()[1].rating()),
-                () -> Assertions.assertTrue(response.routes()[1].rating() > response.routes()[2].rating()),
-                () -> Assertions.assertTrue(response.routes()[2].rating() > response.routes()[3].rating()),
-                () -> Assertions.assertTrue(response.routes()[3].rating() > response.routes()[4].rating())
+                () -> Assertions.assertTrue(response.routes()[0].rating() >= response.routes()[1].rating()),
+                () -> Assertions.assertTrue(response.routes()[1].rating() >= response.routes()[2].rating()),
+                () -> Assertions.assertTrue(response.routes()[2].rating() >= response.routes()[3].rating()),
+                () -> Assertions.assertTrue(response.routes()[3].rating() >= response.routes()[4].rating())
+        );
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    void getRoutesBriefly_checkSortDistanceToMeIsCorrect() {
+        pushRoute(6);
+
+        GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(110d, 110d, null);
+        int page = 0, size = 5;
+        String sort = "distance_to_me,desc";
+
+        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, sort);
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(5, response.routes().length)
         );
     }
 }
