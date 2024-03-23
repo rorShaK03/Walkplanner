@@ -4,7 +4,7 @@ create table if not exists "users" (
     email         varchar(100) not null,
     password_hash varchar(255) not null,
     created_at    timestamp    not null default now(),
-    updated_at    timestamp    not null,
+    updated_at    timestamp,
     primary key (id)
 );
 
@@ -19,7 +19,7 @@ create table if not exists "tracks" (
     distance_meters      int          not null,
     walk_minutes         int          not null,
     created_at           timestamp    not null default now(),
-    updated_at           timestamp    not null,
+    updated_at           timestamp,
     primary key (id)
 );
 
@@ -51,9 +51,6 @@ create table if not exists "tracks_points" (
     track_id             UUID                not null,
     points_id            UUID                not null
 );
-
-
-
 
 
 

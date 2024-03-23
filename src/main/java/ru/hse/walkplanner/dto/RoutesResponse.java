@@ -1,4 +1,4 @@
 package ru.hse.walkplanner.dto;
 
-public record RoutesResponse(RouteInfoDTO[] routes) {
+public record RoutesResponse(RouteInfoDTO route) {
 }

@@ -1,8 +1,17 @@
 package ru.hse.walkplanner.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,6 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Entity
 @Table(name = "users")
@@ -33,7 +43,7 @@ public class User {
     private String passwordHash;
 
     @Setter
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Track> createdTracks;
 
     @CreationTimestamp
@@ -45,6 +55,4 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at")
     private Date updatedAt;
-
-
 }
