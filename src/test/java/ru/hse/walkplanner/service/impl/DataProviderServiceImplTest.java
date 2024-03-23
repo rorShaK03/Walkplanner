@@ -515,7 +515,6 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
 
         RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, sort);
 
-        System.out.println(Arrays.toString(response.routes()));
         Assertions.assertAll(
                 () -> Assertions.assertEquals(5, response.routes().length),
                 () -> Assertions.assertTrue(response.routes()[0].rating() >= response.routes()[1].rating()),
@@ -539,6 +538,27 @@ class DataProviderServiceImplTest extends IntegrationEnvironment {
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(5, response.routes().length)
+        );
+    }
+
+
+    @Test
+    @Transactional
+    @Rollback
+    void getRoutesBriefly_checkMultipleFilterAndSortIsCorrect() {
+        pushRoute(333);
+
+        GetRoutesBrieflyRequest.Requirements requirements = new GetRoutesBrieflyRequest.Requirements(
+                new String[]{"distance_to_me_min=5", "key_points=name", "name=name"}
+        );
+        GetRoutesBrieflyRequest request = new GetRoutesBrieflyRequest(110d, 110d, requirements);
+        int page = 0, size = 100;
+        String sort = "distance_to_me,desc";
+
+        RoutesBrieflyResponse response = dataProviderServiceImpl.getRoutesBriefly(request, page, size, sort);
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(100, response.routes().length)
         );
     }
 }

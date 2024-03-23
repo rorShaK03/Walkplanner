@@ -22,6 +22,7 @@ import ru.hse.walkplanner.repository.TrackRepository;
 import ru.hse.walkplanner.repository.UserRepository;
 import ru.hse.walkplanner.service.ApplyAllSpecsService;
 import ru.hse.walkplanner.service.DataProviderService;
+import ru.hse.walkplanner.service.GetMetricsByMapsApiService;
 import ru.hse.walkplanner.service.utils.MapEntityToDTOHelper;
 
 import java.util.Optional;
@@ -35,6 +36,8 @@ public class DataProviderServiceImpl implements DataProviderService {
 
     private ApplyAllSpecsService applyAllSpecsService;
     private MapEntityToDTOHelper mapEntityToDTOHelper;
+
+    private GetMetricsByMapsApiService metricsService;
 
     @Transactional
     @Override
@@ -54,6 +57,8 @@ public class DataProviderServiceImpl implements DataProviderService {
 
         Track track = mapEntityToDTOHelper.getTrackEntity(info, user);
         track = trackRepository.saveAndFlush(track);
+
+        metricsService.updateDistanceAndTime(track);
 
         return new PushingRouteResponse(track.getId());
     }
