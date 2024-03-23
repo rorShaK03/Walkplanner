@@ -2,6 +2,7 @@ package ru.hse.walkplanner.syntheticData;
 
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import ru.hse.walkplanner.dto.KeyPointsDTO;
 import ru.hse.walkplanner.dto.PointDTO;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Random;
 
 @Service
+@ConditionalOnProperty(name ="app.generate-synthetic-data", havingValue = "true", matchIfMissing=true)
 @AllArgsConstructor
 public class AddSyntheticDataService {
 
