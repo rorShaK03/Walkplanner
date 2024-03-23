@@ -53,7 +53,7 @@ public class MapEntityToDTOHelper {
     }
 
     public Point getPointEntity(PointDTO pointDTO, int index) {
-        return new Point(null, pointDTO.longitude(), pointDTO.latitude(), index);
+        return new Point(null, pointDTO.latitude(), pointDTO.longitude(), index);
     }
 
     public List<Point> getPointEntityList(PointDTO[] pointDTOs) {
