@@ -22,5 +22,7 @@ public abstract class IntegrationEnvironment {
         registry.add("spring.datasource.url", container::getJdbcUrl);
         registry.add("spring.datasource.username", container::getUsername);
         registry.add("spring.datasource.password", container::getPassword);
+
+        registry.add("app.generate-synthetic-data", () -> "false");
     }
 }
