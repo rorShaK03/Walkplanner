@@ -17,6 +17,7 @@ import ru.hse.walkplanner.dto.RegistrationResponse;
 import ru.hse.walkplanner.dto.RoutePushingInfoDTO;
 import ru.hse.walkplanner.dto.RoutesBrieflyResponse;
 import ru.hse.walkplanner.dto.RoutesResponse;
+import ru.hse.walkplanner.exception.ClientErrorException;
 import ru.hse.walkplanner.service.DataProviderService;
 
 
@@ -25,23 +26,6 @@ import ru.hse.walkplanner.service.DataProviderService;
 public class WalkPlannerController {
 
     private DataProviderService dataProviderService;
-
-    @GetMapping("/throw-exception")
-    public String ahaha() {
-        throw new RuntimeException("ahahahhaha");
-    }
-
-    @GetMapping("/return-error-response")
-    public ResponseEntity<ApiErrorResponse> ohoho() {
-        ApiErrorResponse errorResponse = ApiErrorResponse.builder()
-                .exceptionMessage("error")
-                .description("this is error")
-                .build();
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    }
-
-
     @PostMapping("/user/sign-up")
     public ResponseEntity<RegistrationResponse> signUpUser() {
         RegistrationResponse response = dataProviderService.addRandomUser();
@@ -64,7 +48,7 @@ public class WalkPlannerController {
     public ResponseEntity<RoutesBrieflyResponse> getRoutesBriefly(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
-            @RequestParam(defaultValue = "[created_at,desc]") String sort,
+            @RequestParam(defaultValue = "created_at,desc") String sort,
             @RequestBody GetRoutesBrieflyRequest request
     ) {
         RoutesBrieflyResponse response = dataProviderService.getRoutesBriefly(request, page, size, sort);

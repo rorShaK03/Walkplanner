@@ -2,28 +2,23 @@ package ru.hse.walkplanner.service.sorts.impl;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import ru.hse.walkplanner.dto.util.InfoFromRequirements;
 import ru.hse.walkplanner.entity.Track;
+import ru.hse.walkplanner.exception.ClientErrorException;
 import ru.hse.walkplanner.service.sorts.SortSpecService;
 
-import java.util.Optional;
-
 @Component
-public class DistanceToMeSort implements SortSpecService {
+public class DistanceToMeSort extends AbstractSortParser implements SortSpecService {
 
     public static final String sortName = "distance_to_me";
 
+
     @Override
-    public Optional<Specification<Track>> getSpec(String sort, InfoFromRequirements info) {
-        if (!sort.startsWith(sortName)) {
-            return Optional.empty();
-        }
-
-        String direction = sort.split(",")[1];
-
+    protected Specification<Track> getTrackSpecification(String sort, InfoFromRequirements info) {
         Specification<Track> spec;
-        if (direction.equalsIgnoreCase(Sort.Direction.DESC.name())) {
+        if (getDirection(sort).equalsIgnoreCase(Sort.Direction.DESC.name())) {
             spec = (root, query, builder) -> query
                     .where(builder.equal(root.get("points").get("orderNumber"), 0))
                     .orderBy(builder.desc(builder.function("calculate_distance", Float.class,
@@ -33,7 +28,7 @@ public class DistanceToMeSort implements SortSpecService {
                             builder.literal(info.longitude())))
                     )
                     .getRestriction();
-        } else if (direction.equalsIgnoreCase(Sort.Direction.ASC.name())) {
+        } else if (getDirection(sort).equalsIgnoreCase(Sort.Direction.ASC.name())) {
             spec = (root, query, builder) -> query
                     .where(builder.equal(root.get("points").get("orderNumber"), 0))
                     .orderBy(builder.asc(builder.function("calculate_distance", Float.class,
@@ -44,9 +39,18 @@ public class DistanceToMeSort implements SortSpecService {
                     )
                     .getRestriction();
         } else {
-            throw new RuntimeException("unknown direction");
+            throw new ClientErrorException(HttpStatus.BAD_REQUEST.value(), "unknown direction. Excepted 'desc' or 'asc'");
         }
+        return spec;
+    }
 
-        return Optional.of(spec);
+    @Override
+    protected String getSortName() {
+        return sortName;
+    }
+
+    @Override
+    protected String getColumnName() {
+        return null;
     }
 }

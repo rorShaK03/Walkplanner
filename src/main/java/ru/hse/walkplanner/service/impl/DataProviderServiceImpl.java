@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.hse.walkplanner.dto.GetOneRouteRequest;
@@ -18,6 +19,7 @@ import ru.hse.walkplanner.dto.RoutesBrieflyResponse;
 import ru.hse.walkplanner.dto.RoutesResponse;
 import ru.hse.walkplanner.entity.Track;
 import ru.hse.walkplanner.entity.User;
+import ru.hse.walkplanner.exception.ClientErrorException;
 import ru.hse.walkplanner.repository.TrackRepository;
 import ru.hse.walkplanner.repository.UserRepository;
 import ru.hse.walkplanner.service.ApplyAllSpecsService;
@@ -51,7 +53,7 @@ public class DataProviderServiceImpl implements DataProviderService {
     public PushingRouteResponse pushRoute(RoutePushingInfoDTO info) {
         Optional<User> userOpt = userRepository.findById(info.authorId());
         if (userOpt.isEmpty()) {
-            throw new RuntimeException("no user found with this id");
+            throw new ClientErrorException(HttpStatus.BAD_REQUEST.value(), "no user found with this id");
         }
         User user = userOpt.get();
 

@@ -1,5 +1,6 @@
 package ru.hse.walkplanner.service.utils;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import ru.hse.walkplanner.dto.KeyPointsDTO;
 import ru.hse.walkplanner.dto.PointDTO;
@@ -10,6 +11,7 @@ import ru.hse.walkplanner.entity.KeyPoint;
 import ru.hse.walkplanner.entity.Point;
 import ru.hse.walkplanner.entity.Track;
 import ru.hse.walkplanner.entity.User;
+import ru.hse.walkplanner.exception.ClientErrorException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,7 +60,7 @@ public class MapEntityToDTOHelper {
 
     public List<Point> getPointEntityList(PointDTO[] pointDTOs) {
         if (pointDTOs == null || pointDTOs.length == 0) {
-            throw new RuntimeException("You passed route without any points");
+            throw new ClientErrorException(HttpStatus.BAD_REQUEST.value(), "You passed route without any points");
         }
 
         List<Point> points = new ArrayList<>();
