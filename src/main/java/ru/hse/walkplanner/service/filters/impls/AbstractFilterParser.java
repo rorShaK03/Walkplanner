@@ -1,8 +1,10 @@
 package ru.hse.walkplanner.service.filters.impls;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import ru.hse.walkplanner.entity.Track;
 import ru.hse.walkplanner.dto.util.InfoFromRequirements;
+import ru.hse.walkplanner.exception.ClientErrorException;
 import ru.hse.walkplanner.service.filters.FilterSpecService;
 
 import java.util.Optional;
@@ -17,7 +19,7 @@ public abstract class AbstractFilterParser implements FilterSpecService {
 
         String body = filter.substring(getFilterName().length() + 1).strip();
         if (body.isEmpty()) {
-            throw new RuntimeException("body not passed");
+            throw new ClientErrorException(HttpStatus.NO_CONTENT.value(), "body not passed");
         }
         return Optional.of(logic(body, info));
     }
