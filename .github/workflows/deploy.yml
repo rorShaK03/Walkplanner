@@ -1,0 +1,42 @@
+name: Deploy to Yandex Cloud
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v3
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+      - name: Execute maven build
+        run: mvn clean package
+      - name: Docker Image Building
+        run: docker build . --tag cr.yandex/crpr7g1fjlba7fuk4b1f/walkplanner:${{github.sha}}
+      - name: Login to Yandex Cloud Container Registry
+        id: login-cr
+        uses: yc-actions/yc-cr-login@v1
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+      - name: Docker Image Pushing
+        run: docker push cr.yandex/crpr7g1fjlba7fuk4b1f/cert-vault:${{github.sha}}
+      - name: Latest Docker Image
+      - name: Add latest tag
+        if: github.ref == 'refs/heads/main'
+        run: docker tag cr.yandex/crpr7g1fjlba7fuk4b1f/cert-vault:${{github.sha}} cr.yandex/crpr7g1fjlba7fuk4b1f/cert-vault:latest && docker push cr.yandex/crpr7g1fjlba7fuk4b1f/cert-vault:latest
+      - name: Deploy to Instance group
+        id: deploy-coi
+        uses: yc-actions/yc-coi-deploy-ig@v2
+        env:
+          CR_REGISTRY: crpr7g1fjlba7fuk4b1f
+          CR_REPOSITORY: walkplanner
+          IMAGE_TAG: ${{github.sha}}
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          folder-id: b1gmopsptk88n3fa9qiu
+          ig-spec-path: './ig-spec.yaml'

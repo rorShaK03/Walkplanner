@@ -1,0 +1,34 @@
+folder_id: b1gjv0b32v4u9djo3bio
+name: walkplanner-deploy-ig
+instance_template:
+  service_account_id: ajenso3l7fttmbh1um1j
+  platform_id: standard-v3
+  resources_spec:
+    memory: "2147483648"
+    cores: "2"
+    core_fraction: "100"
+  boot_disk_spec:
+    mode: READ_WRITE
+    disk_spec:
+      type_id: network-hdd
+      size: "16106127360"
+      image_id: fd844vvh32eo881foach
+  network_interface_specs:
+    - network_id: enpn5nj1vmvi80qmjnfj
+      subnet_ids:
+        - e9bbi61v5on1kn05ienu
+        - e2lv2gdpvvpfi3aqhb02
+      primary_v4_address_spec: {}
+  scheduling_policy: {}
+scale_policy:
+  fixed_scale:
+    size: "2"
+deploy_policy:
+  max_unavailable: "1"
+  startup_duration: 0s
+  strategy: PROACTIVE
+allocation_policy:
+  zones:
+    - zone_id: ru-central1-a
+    - zone_id: ru-central1-b
+service_account_id: ajenso3l7fttmbh1um1j
