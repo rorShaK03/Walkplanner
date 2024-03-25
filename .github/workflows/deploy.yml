@@ -40,6 +40,6 @@ jobs:
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           folder-id: b1gmopsptk88n3fa9qiu
-          ig-spec-path: './ig-spec.yaml'
-          user-data-path: './user-data.yaml'
-          docker-compose-path: './docker-compose.yaml'
+          ig-spec-path: './deploy/ig-spec.yaml'
+          user-data-path: './deploy/user-data.yaml'
+          docker-compose-path: './deploy/docker-compose.yaml'
