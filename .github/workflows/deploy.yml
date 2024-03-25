@@ -37,6 +37,9 @@ jobs:
           CR_REGISTRY: crpr7g1fjlba7fuk4b1f
           CR_REPOSITORY: walkplanner
           IMAGE_TAG: ${{github.sha}}
+          IMAGE: ${{vars.DOCKER_REGISTRY_REPO}}:${{github.sha}}
+          YC_VM_USERNAME: ${{secrets.YC_VM_USERNAME}}
+          YC_VM_SSH: ${{secrets.YC_VM_SSH}}
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
           folder-id: b1gmopsptk88n3fa9qiu

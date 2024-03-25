@@ -5,9 +5,9 @@ datasource:
     strict_id: false
 ssh_pwauth: no
 users:
-  - name: ${{secrets.YC_VM_USERNAME}}
+  - name: {{secrets.YC_VM_USERNAME}}
     groups: sudo
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:
-      - ${{secrets.YC_VM_SSH}}
+      - {{secrets.YC_VM_SSH}}
