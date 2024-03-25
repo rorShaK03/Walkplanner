@@ -47,9 +47,3 @@ dependencies {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
-
-flyway {
-    url = "jdbc:postgresql:localhost:5432/walkplanner"
-    user = "admin"
-    password = "qwerty"
-}
