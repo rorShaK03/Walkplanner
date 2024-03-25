@@ -1,7 +1,7 @@
 name: Deploy to Yandex Cloud
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "shabad-kirill" ]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,8 +12,8 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
-      - name: Make gradle executable
-        run: chmod +x ./gradlew
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v3
       - name: Execute gradle build
         run:  ./gradlew clean bootJar
       - name: Docker Image Building
