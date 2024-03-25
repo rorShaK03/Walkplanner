@@ -12,8 +12,8 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
-      - name: Execute maven build
-        run: mvn clean package
+      - name: Execute gradle build
+        run: ./gradlew clean bootJar
       - name: Docker Image Building
         run: docker build . --tag cr.yandex/crpr7g1fjlba7fuk4b1f/walkplanner:${{github.sha}}
       - name: Login to Yandex Cloud Container Registry
