@@ -26,10 +26,10 @@ jobs:
         with:
           yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
       - name: Docker Image Pushing
-        run: docker push cr.yandex/crpr7g1fjlba7fuk4b1f/cert-vault:${{github.sha}}
+        run: docker push cr.yandex/crpr7g1fjlba7fuk4b1f/walkplanner:${{github.sha}}
       - name: Add latest tag
         if: github.ref == 'refs/heads/main'
-        run: docker tag cr.yandex/crpr7g1fjlba7fuk4b1f/cert-vault:${{github.sha}} cr.yandex/crpr7g1fjlba7fuk4b1f/cert-vault:latest && docker push cr.yandex/crpr7g1fjlba7fuk4b1f/cert-vault:latest
+        run: docker tag cr.yandex/crpr7g1fjlba7fuk4b1f/walkplanner:${{github.sha}} cr.yandex/crpr7g1fjlba7fuk4b1f/walkplanner:latest && docker push cr.yandex/crpr7g1fjlba7fuk4b1f/walkplanner:latest
       - name: Deploy to Instance group
         id: deploy-coi
         uses: yc-actions/yc-coi-deploy-ig@v2
