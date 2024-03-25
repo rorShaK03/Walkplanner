@@ -5,7 +5,6 @@ build/
 # Compiled class file
 *.class
 build/*
-.gradle/*
 # Log file
 *.log
 
@@ -16,7 +15,6 @@ build/*
 .mtj.tmp/
 
 # Package Files #
-*.jar
 *.war
 *.nar
 *.ear
