@@ -19,7 +19,7 @@ jobs:
           chmod +x ./gradlew
           ./gradlew bootJar
       - name: Docker Image Building
-        run: docker build . --tag cr.yandex/crpr7g1fjlba7fuk4b1f/walkplanner:${{github.sha}}
+        run: docker build --tag cr.yandex/crpr7g1fjlba7fuk4b1f/walkplanner:${{github.sha}} --file "deploy/Dockerfile" .
       - name: Login to Yandex Cloud Container Registry
         id: login-cr
         uses: yc-actions/yc-cr-login@v1
