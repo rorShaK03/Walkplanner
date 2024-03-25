@@ -15,7 +15,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v3
       - name: Execute gradle build
-        run:  ./gradlew clean bootJar
+        run: |
+          chmod +x ./gradlew
+          ./gradlew bootJar
       - name: Docker Image Building
         run: docker build . --tag cr.yandex/crpr7g1fjlba7fuk4b1f/walkplanner:${{github.sha}}
       - name: Login to Yandex Cloud Container Registry
